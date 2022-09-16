@@ -92,14 +92,14 @@ def cart(request):
     if cart:
         client = razorpay.Client(auth =(settings.KEY, settings.SECRET))
         payment = client.order.create({'amount':cart.get_cart_total()*100,'currency':'INR','payment_capture':1})
-        
-        cart.orders.order_id = payment['id']
+        cart.razorpay_order_id = payment['id']
         cart.save()
         print('**********************')
         print(payment)
         print('**********************')
         
-    payment = None
+    else:
+        payment = None
     context['payment'] = payment
     print(payment)
     return render(request,"products/cart.html",context)
@@ -113,11 +113,12 @@ def remove_coupon(request, cart_id):
 
 def success(request):
     order_id = request.GET.get('razorpay_order_id')
-    cart = Cart.objects.get(order__order_id=order_id)
+    cart = Cart.objects.get(razorpay_order_id=order_id)
     cart.is_paid = True
     cart.save()
     return HttpResponse("Paymnet Successful")
 
-def generate_pdf(request):
-    order
+
+
+
 

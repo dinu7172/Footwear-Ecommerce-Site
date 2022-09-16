@@ -64,16 +64,13 @@ class Product(BaseModel):
         return self.product_name
     
 
-class Order(BaseModel):
-    order_id = models.CharField(max_length=100,null=True,blank=True)
-    payment_id = models.CharField(max_length=100,null=True,blank=True)
-    paymrnt_signature = models.CharField(max_length=100,null=True,blank=True)
-
 class Cart(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart")
     is_paid = models.BooleanField()
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL,blank=True,null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True,related_name= 'orders')
+    razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
 
     def get_cart_total(self) :
         cart_items = self.cartitem.all( )
@@ -122,7 +119,8 @@ class CartItem(BaseModel):
     def get_product_name(self):
         return self.product.category
 
-
+    # def __str__(self):
+    #     return self.get_product_name
 
                      
 
