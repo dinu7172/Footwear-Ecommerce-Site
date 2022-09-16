@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+</head>
+<style>
+    body{
+  font-size: 1.1rem;
+  line-height: 1rem;
+}
+ table,th,td {
+  border:1px solid black;
+   border-collapse: collapse;
+   line-height: 1em;
+   padding: 5px;
+}
+.name{
+  font-size: 20px;
+  font-weight: 700;
+  
+}
+div.mini{
+  display: flex;
+  justify-content: space-between;
+  
+}
+</style>
+<body>
+    <div class="container">
+        <div class="mini">
+          <div class="mini1">
+            <p>Invoice Recipt</p>
+          <p>Invoice Number:{{data.id}} </p>
+            <br>
+            <p>Service Provider</p>
+            <p>Django Ecommerce</p>
+            <p>Room No: 199, Thakkar Bappa Colony, Basant Nagar, Chembur, Mumbai 400071</p>
+            <p>Mobile No: 8291904939</p>
+            
+          </div>
+          <div class="mini2">
+            <p>Order Date:{{ data.order_date }} </p>
+            <p class="name">Customer name</p>
+            <p>{{data.name }} </p>
+            <p>Address : {{ data.address }}</p>
+          </div>
+        </div>
+        <br>
+        
+        <table style="width:100%">
+        <tr>
+          <th>Description</th>
+          <th>Bill Amount</th>
+          <th>Payment Method</th>
+        </tr>
+        <tr>
+          <td>{{ data.description }}</td>
+          <td>{{ data.amount }}</td>
+          <td>{{ data.pay_method }}</td>
+        </tr>
+      </table>
+        <div class="last">
+          <p class="plz">
+          Please Note: 
+        </p>
+          <p>Dear Consumer, the bill payment is will reflect in 48 years in your account. Please contact the cosumer care for any quaries and problems.</p>
+        </div>
+        <strong>Thank You for shopping</strong>
+      </div>
+      <p style="text-align: center;">(This computer generated recipt and it does not require signature.)</p>
+</body>
+</html>

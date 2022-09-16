@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<link rel="stylesheet" href="/media/css/cart.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <div>
+{% include "base/base_login.html"%}
+
+
+<section class="cart1">
+    <div class="card main-body">
+        <div class="row">
+            <div class="col-md-8 cart">
+                <div class="title tit">
+                    <div class="row">
+                        <div class="col">
+                            <h4><b>Shopping Cart</b></h4>
+                        </div>
+                        <div class="col align-self-center text-right text-muted">{{ request.user.profile.get_cart_counter}}s items</div>
+                    </div>
+                </div>
+                {% if cart is none %}
+                <h4>Cart is Empty</h4>
+                {% else %}
+                
+                {% for cart_item in cart_items %}
+                <div class="row border-top border-bottom">
+                    <div class="row main align-items-center">
+                        
+                        <div class="col-2"><img style="height: 120px !important; object-fit: contain;" class="img" src="/media/{{cart_item.product.img }}"></div>
+                        <div class="col">
+                            <div class="row text-muted">{{cart_item.product.category }}</div>
+                            <div class="row">{{cart_item.product.product_name }}</div>
+                        </div>
+                        <div class="col">
+                            <a class="text-none" href="#">-</a><a href="#" class="border text-none">{{ cart_item.quantity }}</a><a class="text-none" href="#">+</a>
+                        </div>
+                        <div class="col">{{ cart_item.get_product_price }} <span class="close"><a class="cross" style="
+                            font-size: 20px; text-decoration: none;" href="{% url 'remove_cartitem' cart_item.uid %}">&#10005;</a></span></div>
+                    </div>
+                </div>
+                <!-- <h4>{{cart_item.product.product_name}}</h4> -->
+                {% endfor %}
+                {% endif %}
+    
+                
+    
+                
+                <div class="back-to-shop"><a href="#">&leftarrow;</a>
+                    <span class="text-muted"><a style="list-style: none; text-decoration: none;" href="{% url 'index' %}">Back to Shop</a></span></div>
+            </div>
+            <div class="col-md-4 summary">
+                {% if cart.coupon %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                     The Coupon Code <strong>{{ cart.coupon.coupon_code }} is applied.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  
+                {% endif %}
+                <div>
+                    <h5><b>Summary</b></h5>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col" style="padding-left:0;">ITEMS {{ request.user.profile.get_cart_counter}}</div>
+                    {% if cart is none %}
+                    <div class="col text-right">Rs 0</div>
+                    {% else %}
+                    <div class="col text-right">Rs {{cart.get_cart_total}}</div>
+                    {% endif %}
+                </div>
+                <form method="POST">
+                    {% include 'base/alert.html'%}
+                    {% csrf_token %}
+                    <p>Enter Coupon Code</p>
+                    <input id="code" name="coupon" placeholder="Enter your code">
+                    <button style="text-align: center" type="submit">Submit</button>
+                </form>
+                {% if  cart.coupon %}
+                <a style="font-size: 18px;" href="{% url 'remove_coupon' cart.uid %}" class="btn btn-success"> Remove Coupon</a>
+                  
+                {% endif %}
+
+                <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                    <div class="col">TOTAL PRICE</div>
+                    {% if cart is none %}
+                    <div class="col text-right">Rs 0</div>
+                    {% else %}
+                    <div class="col text-right">Rs {{cart.get_cart_total }}</div>
+                    {% endif %}
+                </div>
+
+
+                <button id="rzp-button1" style="font-size: 18px;" class="btn">CHECKOUT</button>
+            </div>
+        </div>
+    
+    </div>
+</section>
+</div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "rzp_test_wCGeB0eYuFDxbE", // Enter the Key ID generated from the Dashboard
+        "amount": "{{ payment.amount }}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "Ecomm",
+        "description": "Customer Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 2
+        "handler": function (response){
+            window.location.href = `http://127.0.0.1:8000/success/?razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}&razorpay_payment_signature=${response.razorpay_signature}`
+
+            // alert(response.razorpay_payment_id);
+            // alert(response.razorpay_order_id);
+            // alert(response.razorpay_signature)
+        },
+        
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+    </script>
+</body>
+</html>
+
+
+

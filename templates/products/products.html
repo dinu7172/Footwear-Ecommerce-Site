@@ -1,0 +1,32 @@
+{% if request.user.is_authenticated %}
+
+{% include "base/base_login.html" %}
+{% else %}
+{% include "base/base.html"%}
+{% endif%}
+
+{% block start %}
+<section>
+    <h2 class="text-center">PRODUCTS</h2>
+      <div class="container1 my-3">
+    
+        {% for product in products %}
+        <a href="{% url 'products_info' product.slug %}">
+            <div class="card my-2" style="width: 18rem;">
+                <img class="card-img-top" style="height: 300px !important;" src="/media/{{product.img}}" alt="Card image cap1">
+                <div class="card-body">
+                 <a class="text-none" href="{% url 'products_info' product.slug %}"><h5 class="card-title">{{product.product_name}}</h5></a>
+                  <p class="card-text">{{product.product_description}}</p>
+                  <p class="card-text">Price - Rs{{product.price}}</p>
+                  <a href="#" class="btn btn-primary">Buy Now</a>
+                </div>
+              </div>
+              </a>
+        {% endfor %}
+        
+        </div>
+      </section>
+        <!-- OUR FOOTER -->
+    
+        {% include "base/footer.html"%}
+{% endblock %}

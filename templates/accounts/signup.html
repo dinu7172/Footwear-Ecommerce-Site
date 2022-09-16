@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+
+{% block start %}
+
+<section class="section-conten padding-y" style="min-height:84vh">
+
+    <!-- ============================ COMPONENT LOGIN   ================================= -->
+    <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Sign up</h4>
+            <form method="POST">
+                {% include "base/alert.html" %}
+
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <input class="form-control" required placeholder="First Name" name="first_name" type="text">
+                </div> <!-- form-group// -->
+
+                <div class="form-group">
+                    <input class="form-control" required placeholder="Last name" name="last_name" type="text">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" required placeholder="email" name="email" type="text">
+                 </div>
+                <div class="form-group">
+                    <input class="form-control" required placeholder="Password" name="password" type="password">
+                </div> <!-- form-group// -->
+
+
+
+                <div class="form-group">
+                    <a href="#" class="float-right">Forgot password?</a>
+                    <label class="float-left custom-control custom-checkbox"> <input type="checkbox"
+                            class="custom-control-input" checked="">
+                        <div class="custom-control-label"> Remember </div>
+                    </label>
+                </div> <!-- form-group form-check .// -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-dark btn-block"> Register </button>
+                </div> <!-- form-group// -->
+            </form>
+        </div> <!-- card-body.// -->
+    </div> <!-- card .// -->
+
+    <p class="text-center mt-4">Already have account? <a href="#">Sign in</a></p>
+    <br><br>
+    <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+
+
+</section>
+{% endblock %}
