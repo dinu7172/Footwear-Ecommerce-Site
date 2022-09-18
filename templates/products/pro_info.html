@@ -79,11 +79,11 @@
                 <label>Quantity</label>
                 <div class="input-group mb-3 input-spinner">
                   <div class="input-group-prepend">
-                    <button class="btn btn-light" type="button" id="button-plus"> + </button>
+                    <button class="btn btn-light" onclick="add()" type="button" id="button-plus"> + </button>
                   </div>
-                  <input type="text" class="form-control" value="1">
+                  <input type="number" class="form-control" id="qnt" value=1>
                   <div class="input-group-append">
-                    <button class="btn btn-light" type="button" id="button-minus"> − </button>
+                    <button class="btn btn-light" type="button" onclick="sub()" id="button-minus"> − </button>
                   </div>
                 </div>
             </div> <!-- col.// -->
@@ -118,6 +118,19 @@
     </div>
     </section>
     <script>
+      console.log(document.querySelector('.form-control').value)
+      let counter = parseInt(document.querySelector('.form-control').value)
+      function add(){
+        counter +=1
+        document.querySelector('.form-control').value = counter
+        console.log(document.querySelector('.form-control').value)
+      }
+      function sub(){
+        if(document.querySelector('.form-control').value > 1){
+          counter -= 1
+        document.querySelector('.form-control').value  = counter
+        }
+      }
       
       function get_correct_price(size){
       window.location.href = window.location.pathname +`?size=${size}`

@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 from base.models import BaseModel
@@ -18,8 +17,7 @@ class Profile(BaseModel):
         return f"{self.user} {self.email_token}"
     def get_cart_counter(self):
         return products.models.CartItem.objects.filter(cart__is_paid=False, cart__user= self.user).count()
-    # def get_product_category(self):
-    #     return products.models.CartItem.objects.
+    
 
 
 

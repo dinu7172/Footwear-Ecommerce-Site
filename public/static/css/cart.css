@@ -159,3 +159,6 @@ section{
     width: 100px;
     margin: 10px;
 }
+section .register{
+    font-size: 18px;
+}

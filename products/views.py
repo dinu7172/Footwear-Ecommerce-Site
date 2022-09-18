@@ -10,7 +10,7 @@ def products(request):
     return render(request,'products/products.html',{
         'products':products
     })
-
+    
 def get_products(request,slug):
     try:
         product = Product.objects.get(slug=slug)
@@ -56,7 +56,8 @@ def remove_cartitem(request, cart_item_uid):
     except Exception as e:
         print(e)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
+# def update_qnt(request, cart_items):
+#     cart_item.quantity = 
 
 from django.conf import settings
 def cart(request):
@@ -92,8 +93,8 @@ def cart(request):
     if cart:
         client = razorpay.Client(auth =(settings.KEY, settings.SECRET))
         payment = client.order.create({'amount':cart.get_cart_total()*100,'currency':'INR','payment_capture':1})
-        order = Order.objects.get(cart = cart)
-        order.razorpay_order_id = payment['id']
+        # order = Order.objects.get(cart = cart)
+        cart.razorpay_order_id = payment['id']
         cart.save()
         print('**********************')
         print(payment)
@@ -105,6 +106,8 @@ def cart(request):
     print(payment)
     return render(request,"products/cart.html",context)
 
+
+
 def remove_coupon(request, cart_id):
     cart = Cart.objects.get(uid = cart_id)
     cart.coupon  = None
@@ -114,8 +117,8 @@ def remove_coupon(request, cart_id):
 
 def success(request):
     order_id = request.GET.get('razorpay_order_id')
-    # cart = Cart.objects.get(razorpay_order_id=order_id)
-    order = Order.objects.get(razorpay_order_id=order_id)
+    cart = Cart.objects.get(razorpay_order_id=order_id)
+    # order = Order.objects.get(razorpay_order_id=order_id)
     cart.is_paid = True
     cart.save()
     return HttpResponse("Paymnet Successful")

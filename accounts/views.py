@@ -1,5 +1,4 @@
 
-
 from cmath import log
 from tkinter import E
 from django.shortcuts import redirect, render
@@ -12,6 +11,7 @@ from django.core.mail import send_mail
 import imp
 from .models import Profile
 from base.emails import *
+import re
 
 
 def user_login(request):
@@ -47,6 +47,16 @@ def logout_user(request):
     return redirect('/')
 
 
+regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,18}$"
+
+# compiling regex
+match_re = re.compile(reg)
+
+# searching regex
+
+
+# validating conditions
 
 def register(request):
     if request.method == "POST":
@@ -54,17 +64,26 @@ def register(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        
+        if(re.fullmatch(regex, email)):
+            if re.search(match_re, password):
+                user_obj = User.objects.filter(username = email)
+                if user_obj.exists():
+                    messages.warning(request, "The email is already exist.")
+                    return HttpResponseRedirect(request.path_info)
 
-        user_obj = User.objects.filter(username = email)
-        if user_obj.exists():
-            messages.warning(request, "The email is already exist.")
-            return HttpResponseRedirect(request.path_info)
+                user_obj = User.objects.create(first_name=first_name,last_name=last_name,email=email, username=email)
+                user_obj.set_password(password)
+                user_obj.save()
+                print(user_obj.email)
+                messages.success(request, "The email has been sent you to mail.")
+            else:
+                messages.warning(request, "The password is not valid")
+        else:
+            messages.warning(request, "The name is not valid")   
+    
 
-        user_obj = User.objects.create(first_name=first_name,last_name=last_name,email=email, username=email)
-        user_obj.set_password(password)
-        user_obj.save()
-        print(user_obj.email)
-        messages.success(request, "The email has been sent you to mail.")
+
         return HttpResponseRedirect(request.path_info)
 
     return render(request,'accounts/signup.html')
@@ -112,14 +131,16 @@ def change_pswd(request, email_token):
         if pass1 !=pass2:
             messages.warning(request, "Passwords is not matching")
             return HttpResponseRedirect(request.path_info)
-        user = Profile.objects.get(email_token=email_token)
-        user = user.user
-        email = user.email
-        print(email)
+        if re.search(match_re, pass1):
+            user = Profile.objects.get(email_token=email_token)
+            user = user.user
+            email = user.email
+            user = User.objects.get(username=email)
+            user.set_password(pass2)
+            user.save()
+        else:
+            messages.warning(request, "Password is not valid.")
+            return HttpResponseRedirect(request.path_info)
         
-        user = User.objects.get(username=email)
-        user.set_password(pass2)
-        # # user.password = make_password(pass2)
-        user.save()
-        return redirect('/')
+        return redirect('login')
     return render(request, "accounts/change.html")

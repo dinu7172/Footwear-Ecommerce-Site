@@ -63,13 +63,26 @@ class Product(BaseModel):
     def get_product_name(self):
         return self.product_name
     
+# class Order(BaseModel):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE,)
+#     # cart = models.ManytoManyField(Cart, on_delete=models.CASCADE,null=True,related_name='cart')
+#     razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
+#     razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
+#     razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
+
+#     def __str__(self):
+#         return razorpay_order_id
 
 
 class Cart(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="cart")
     is_paid = models.BooleanField()
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL,blank=True,null=True)
-    # order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True,null=True,related_name ='cart')
+    razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
+    # order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True,null=True,related_name ='order')
+    
     
 
     def get_cart_total(self) :
@@ -90,19 +103,7 @@ class Cart(BaseModel):
                 return sum(price) - self.coupon.discount_price
                     # print(cart_item.get_product_price)
         # print(price)
-        return sum(price)
-
-class Order(BaseModel):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True,related_name='cart')
-    razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
-    razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
-    razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
-
-    def __str__(self):
-        return razorpay_order_id
-
-
-    
+        return sum(price) 
 
 class CartItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name="cartitem")
