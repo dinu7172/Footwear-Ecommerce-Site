@@ -43,7 +43,9 @@
                             <div class="row">{{cart_item.product.product_name }}</div>
                         </div>
                         <div class="col">
-                            <a class="text-none" href="#">-</a><a href="#" class="border text-none">{{ cart_item.quantity }}</a><a class="text-none" href="#">+</a>
+                            <a class="text-none" href="#">-</a>
+                            <a href="#" class="border text-none">{{ cart_item.quantity }}</a>
+                            <a class="text-none" href="#">+</a>
                         </div>
                         <div class="col">{{ cart_item.get_product_price }} <span class="close"><a class="cross" style="
                             font-size: 20px; text-decoration: none;" href="{% url 'remove_cartitem' cart_item.uid %}">&#10005;</a></span></div>
@@ -75,11 +77,7 @@
                 <hr>
                 <div class="row">
                     <div class="col" style="padding-left:0;">ITEMS {{ request.user.profile.get_cart_counter}}</div>
-                    {% if cart is none %}
-                    <div class="col text-right">Rs 0</div>
-                    {% else %}
-                    <div class="col text-right">Rs {{cart.get_cart_total}}</div>
-                    {% endif %}
+                    {% if cart is none %}<div class="col text-right">Rs 0</div>{% else %}<div class="col text-right">Rs {{ cart.get_cart_total }}</div>{% endif %}
                 </div>
                 <form method="POST">
                     {% include 'base/alert.html'%}
@@ -95,11 +93,7 @@
 
                 <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                     <div class="col">TOTAL PRICE</div>
-                    {% if cart is none %}
-                    <div class="col text-right">Rs 0</div>
-                    {% else %}
-                    <div class="col text-right">Rs {{cart.get_cart_total }}</div>
-                    {% endif %}
+                    {% if cart is none %}<div class="col text-right">Rs 0</div>{% else %}<div class="col text-right">Rs {{cart.get_cart_total }}</div>{% endif %}
                 </div>
 
 

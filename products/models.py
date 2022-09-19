@@ -39,7 +39,7 @@ class Coupon(BaseModel):
 
 class Product(BaseModel):
     product_name = models.CharField(max_length=100)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='products')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='category')
     price = models.IntegerField()
     desc = models.TextField()
     quantity = models.IntegerField(null=True, blank=True)
@@ -63,15 +63,6 @@ class Product(BaseModel):
     def get_product_name(self):
         return self.product_name
     
-# class Order(BaseModel):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE,)
-#     # cart = models.ManytoManyField(Cart, on_delete=models.CASCADE,null=True,related_name='cart')
-#     razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
-#     razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
-#     razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
-
-#     def __str__(self):
-#         return razorpay_order_id
 
 
 class Cart(BaseModel):
@@ -79,14 +70,14 @@ class Cart(BaseModel):
     is_paid = models.BooleanField()
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL,blank=True,null=True)
     razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
-    razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
-    razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
+    # razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
+    # razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
     # order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True,null=True,related_name ='order')
     
     
 
     def get_cart_total(self) :
-        cart_items = self.cartitem.all( )
+        cart_items = self.cartitem.all()
         price = []
         for cart_item in cart_items :
             # price.append(cart_item.get_product_price)
@@ -107,7 +98,7 @@ class Cart(BaseModel):
 
 class CartItem(BaseModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name="cartitem")
-    product  = models.ForeignKey(Product, on_delete=models.SET_NULL,null=True,blank=True,related_name="products")
+    product  = models.ForeignKey(Product, on_delete=models.SET_NULL,null=True,blank=True,related_name="product")
     quantity = models.IntegerField(default=1)
     Colorvariant = models.ForeignKey(Colorvariant, on_delete=models.SET_NULL,blank=True,null=True)
     Sizevariant = models.ForeignKey(Sizevariant, on_delete=models.SET_NULL,blank=True,null=True)
@@ -132,7 +123,17 @@ class CartItem(BaseModel):
     # def __str__(self):
     #     return self.get_product_name
 
-                     
+class Order(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True,related_name='cart')
+    razorpay_order_id = models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_id = models.CharField(max_length=100,null=True,blank=True)
+    razorpay_payment_signature = models.CharField(max_length=100,null=True,blank=True)
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    # def __str__(self):
+    #     return self.cart.cartitem
+            
 
     
     

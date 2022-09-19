@@ -64,6 +64,7 @@ def register(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        phone = request.POST.get('phone')
         
         if(re.fullmatch(regex, email)):
             if re.search(match_re, password):
