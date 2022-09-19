@@ -81,10 +81,10 @@ def cart(request):
         print('++++++++++++++++===============+++++++++++++++')
     except Exception as e:
         print(e)
-    context = {'cart_items': CartItem.objects.filter(cart__is_paid=False,cart__user=request.user, cart=cart)}
+    context = {'cart_items': CartItem.objects.filter(cart__is_paid=False,cart__user=request.user)}
     # cart = Cart.objects.get(user=request.user,is_paid=False)
-    context['cart'] = cart
-    # context['cart'] = Cart.objects.filter(user=request.user,is_paid=False)
+    # context['cart'] = cart
+    context['cart'] = Cart.objects.get(user=request.user,is_paid=False)
     if request.method  == 'POST': 
         coupon = request.POST.get('coupon')
         coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon)
